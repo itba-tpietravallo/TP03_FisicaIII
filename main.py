@@ -1,6 +1,6 @@
 import csv
 import pandas as pd
-import glob
+import os
 from pathlib import Path
 import matplotlib.pyplot as plt
 
@@ -38,12 +38,12 @@ Path('datos').mkdir(exist_ok=True)
 Path('graficos').mkdir(exist_ok=True)
 
 # Leer todos los archivos CSV en la carpeta
-archivos_csv = ruta_carpeta.glob('*.CSV')
+archivos_csv = sorted(ruta_carpeta.glob('*.CSV'), key=lambda x: os.path.basename(x))
 
 periodo_muestreo = 4
 
 # Leer y almacenar los datos de waveform data y el periodo de muestreo de cada archivo CSV
-for archivo in archivos_csv:
+for idx, archivo in enumerate(archivos_csv):
     valores_y = leer_archivo_csv(archivo)
     n = len(valores_y)
     valores_x = [i * periodo_muestreo for i in range(n)]
