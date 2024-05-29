@@ -38,7 +38,7 @@ Path('datos').mkdir(exist_ok=True)
 Path('graficos').mkdir(exist_ok=True)
 
 # Leer todos los archivos CSV en la carpeta
-archivos_csv = glob.glob(str(ruta_carpeta / '*.csv'))
+archivos_csv = ruta_carpeta.glob('*.CSV')
 
 periodo_muestreo = 4
 
