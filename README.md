@@ -4,7 +4,7 @@
 La información que resulte de este código complementa al informe para el Trabajo Práctico n°3, correspondiente al grupo 2 de la comisión S.
 
 ## Breve introducción
-Cuando se realizó el trabajo práctico, notamos que el oscilómetro contaba con un puerto USB, y por pura curiosidad decidimos investigar si era posible obtener los datos de las mediciones realizadas en formato digital. Luego de una búsqueda en internet, encontramos el manual del dispositivo, que indicaba que se guardaban los datos en formato CSV. Pero esto no era suficientel, ya que no se podia generar un gráfico o entender lo que estábamos viendo sin interpretar los datos. Por lo tanto, decidimos realizar un script que permitiera generar los gráficos e interpretar los datos, dejándolos como pares (x,y).
+Cuando se realizó el trabajo práctico, notamos que el oscilómetro contaba con un puerto USB, y por pura curiosidad decidimos investigar si era posible obtener los datos de las mediciones realizadas en formato digital. Luego de una búsqueda en internet, encontramos el manual del dispositivo, que indicaba que se guardaban los datos en formato CSV. Pero esto no era suficiente, ya que no se podía generar un gráfico o entender lo que estábamos viendo sin interpretar los datos. Por lo tanto, decidimos realizar un script que permitiera generar los gráficos e interpretar los datos, dejándolos como pares (x,y).
 
 
 ### Miembros del grupo: 
