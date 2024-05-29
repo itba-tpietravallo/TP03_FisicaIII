@@ -28,6 +28,7 @@ def generar_grafico(valores_x, valores_y, nombre_archivo):
     plt.grid(True)
     plt.ylim(-40, 40)
     plt.savefig(nombre_archivo)
+    plt.close()
 
 
 # Ruta a la carpeta que contiene los archivos CSV
