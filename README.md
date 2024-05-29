@@ -1,3 +1,4 @@
+# README
 > Este repositorio contiene el código utilizado para obtener información sobre las mediciones realizadas con un oscilómetro utilizado en el laboratorio de Física del Instituto Tecnológico de Buenos Aires.
 
 Miembros del grupo: 
