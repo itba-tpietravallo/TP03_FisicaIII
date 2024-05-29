@@ -22,7 +22,7 @@ def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
 def generar_grafico(valores_x, valores_y, nombre_archivo):
     plt.figure(figsize=(10, 6))
     plt.scatter(valores_x, valores_y)
-    plt.title('Tensión en función del tiempo')
+    # plt.title('Tensión en función del tiempo')
     plt.xlabel('Tiempo (ms)')
     plt.ylabel('Tensión(V)')
     plt.grid(True)
