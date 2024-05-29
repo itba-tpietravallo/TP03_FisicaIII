@@ -4,11 +4,14 @@ import os
 from pathlib import Path
 import matplotlib.pyplot as plt
 
+divisiones_verticales = 8
 
 def leer_archivo_csv(ruta_archivo):
     indice_inicio = 17
+    indice_volts = 6
+    ch1 = int((pd.read_csv(ruta_archivo, skiprows=lambda x: x != indice_volts).columns[1][:-1]))
     datos_onda = pd.read_csv(ruta_archivo, skiprows=indice_inicio, usecols=[0], names=['Datos de Onda'])
-    return datos_onda['Datos de Onda'].tolist()
+    return list(map(lambda x: x / (ch1 * divisiones_verticales), datos_onda['Datos de Onda'].tolist()))
 
 
 def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
@@ -22,12 +25,13 @@ def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
 def generar_grafico(valores_x, valores_y, nombre_archivo):
     plt.figure(figsize=(10, 6))
     plt.scatter(valores_x, valores_y)
-    # plt.title('Tensión en función del tiempo')
+    plt.title('Tensión en función del tiempo')
     plt.xlabel('Tiempo (ms)')
     plt.ylabel('Tensión(V)')
     plt.grid(True)
-    plt.ylim(-40, 40)
+    plt.ylim(-8, 8)
     plt.savefig(nombre_archivo)
+    plt.close()
 
 
 # Ruta a la carpeta que contiene los archivos CSV
@@ -54,4 +58,5 @@ for idx, archivo in enumerate(archivos_csv):
     # Usar la función para generar gráficos
     generar_grafico(valores_x, valores_y, Path('graficos') / f"{Path(archivo).stem}DatosOnda.png")
 
-    print(f"Archivo #{Path(archivo).stem} terminado")
+    if idx % 5 == 0:
+        print(f"Archivo #{Path(archivo).stem} terminado")
