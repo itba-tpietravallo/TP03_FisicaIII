@@ -26,7 +26,7 @@ def generar_grafico(valores_x, valores_y, nombre_archivo):
     plt.xlabel('Tiempo (ms)')
     plt.ylabel('Tensión(V)')
     plt.grid(True)
-    plt.ylim(-30, 30)
+    plt.ylim(-40, 40)
     plt.savefig(nombre_archivo)
 
 
