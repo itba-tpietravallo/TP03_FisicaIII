@@ -1,6 +1,8 @@
 import csv
 import pandas as pd
+import numpy as np
 import os
+import math
 from pathlib import Path
 import matplotlib.pyplot as plt
 
@@ -9,9 +11,11 @@ divisiones_verticales = 8
 def leer_archivo_csv(ruta_archivo):
     indice_inicio = 17
     indice_volts = 6
+    indice_sampling = 13
     ch1 = int((pd.read_csv(ruta_archivo, skiprows=lambda x: x != indice_volts).columns[1][:-1]))
+    sampling = float(pd.read_csv(ruta_archivo, skiprows=lambda x: x != indice_sampling).columns[1].split('u')[0])
     datos_onda = pd.read_csv(ruta_archivo, skiprows=indice_inicio, usecols=[0], names=['Datos de Onda'])
-    return list(map(lambda x: x / (ch1 * divisiones_verticales), datos_onda['Datos de Onda'].tolist()))
+    return list(map(lambda x: x / (ch1 * divisiones_verticales), datos_onda['Datos de Onda'].tolist())), sampling
 
 
 def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
@@ -22,10 +26,10 @@ def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
             escritor.writerow([valores_x[i], valores_y[i]])
 
 
-def generar_grafico(valores_x, valores_y, nombre_archivo):
+def generar_grafico(valores_x, valores_y, vpp, frecuencia, nombre_archivo):
     plt.figure(figsize=(10, 6))
-    plt.scatter(valores_x, valores_y)
-    plt.title('Tensión en función del tiempo')
+    plt.scatter(valores_x, valores_y, label=f"Frecuencia: {frecuencia}kHz")
+    plt.title(f'Tensión en función del tiempo. Frecuencia: {frecuencia}kHz. Vpp: {vpp}')
     plt.xlabel('Tiempo (ms)')
     plt.ylabel('Tensión(V)')
     plt.grid(True)
@@ -33,6 +37,61 @@ def generar_grafico(valores_x, valores_y, nombre_archivo):
     plt.savefig(nombre_archivo)
     plt.close()
 
+def obtener_signo(number):
+    if number == 0:
+        return 0
+    else:
+        return math.copysign(1, number)
+
+def calcular_frecuencia(valores_x: list[int], valores_y: list[int], periodo_muestreo: float):
+    min = []
+    max = []
+    vpp = []
+
+    prev_value = valores_y[0]
+    indices = []
+
+    for i, y in enumerate(valores_y):
+        if (
+            # Bolzano
+            y * prev_value <= 0 and
+            # Filter out noise
+            (i + 1 >= len(valores_y) or valores_y[i + 1] * prev_value <= 0 ) and
+            (i + 1 >= len(valores_y) or obtener_signo(valores_y[i + 1]) == obtener_signo(y) ) and
+            (len(indices) <= 0 or obtener_signo(valores_y[indices[-1]]) != obtener_signo(y) ) and
+            # Guarantee distance between peaks of at least one data point
+            (len(indices) == 0 or i > indices[-1] + 1) and
+            (len(indices) == 0 or (i > indices[-1] + 2 and obtener_signo(valores_y[indices[-1] - 1])) != obtener_signo(prev_value) )
+            ):
+            # More noise filtering :)
+            if ( (y * prev_value == 0 and obtener_signo(y) == obtener_signo(prev_value)) or
+                ( len(indices) > 0 and obtener_signo(valores_y[indices[-1] + 1]) == obtener_signo(y))
+                or (len(indices) > 0 and y == 0 and indices[-1] == 0)
+            ):
+                prev_value = y
+                continue
+            indices.append(i)
+        prev_value = y
+
+    for i, _ in enumerate(indices, 1):
+        if i >= len(indices):
+            break
+        valores = valores_y[indices[i-1]:indices[i]]
+        ma = np.max(valores)
+        mi = np.min(valores)
+        if (abs(ma) > abs(mi)):
+            max.append(ma)
+        else:
+            min.append(mi)
+
+    for ma, mi in zip(max, min):
+        vpp.append(ma - mi)
+
+    vpp_value = np.mean(vpp)
+    freq_data = indices[1:-1]
+    cycles = len(freq_data) / 2 # Half-cycles / 2
+    frequency_hz = cycles / ((freq_data[-1] - freq_data[0]) * (periodo_muestreo / 1_000_000 ))
+    return vpp_value, round(frequency_hz / 1000, 3)
 
 # Ruta a la carpeta que contiene los archivos CSV
 ruta_carpeta = Path('csv/')
@@ -44,19 +103,31 @@ Path('graficos').mkdir(exist_ok=True)
 # Leer todos los archivos CSV en la carpeta
 archivos_csv = sorted(ruta_carpeta.glob('*.CSV'), key=lambda x: os.path.basename(x))
 
-periodo_muestreo = 4
+vpp_freq = []
 
 # Leer y almacenar los datos de waveform data y el periodo de muestreo de cada archivo CSV
 for idx, archivo in enumerate(archivos_csv):
-    valores_y = leer_archivo_csv(archivo)
-    n = len(valores_y)
-    valores_x = [i * periodo_muestreo for i in range(n)]
+    valores_y, periodo_muestreo = leer_archivo_csv(archivo)
+    valores_x = [i * periodo_muestreo for i in range(len(valores_y))]
 
     # Crear un nuevo archivo CSV para almacenar los resultados en el directorio "datos"
     escribir_archivo_csv(Path('datos') / f"{Path(archivo).stem}DatosOnda.csv", valores_x, valores_y)
 
-    # Usar la función para generar gráficos
-    generar_grafico(valores_x, valores_y, Path('graficos') / f"{Path(archivo).stem}DatosOnda.png")
+    vpp, frecuencia = calcular_frecuencia(valores_x=valores_x, valores_y=valores_y, periodo_muestreo=periodo_muestreo)
+    vpp_freq.append([vpp, frecuencia])
 
-    if idx % 5 == 0:
-        print(f"Archivo #{Path(archivo).stem} terminado")
+    # Usar la función para generar gráficos
+    generar_grafico(valores_x, valores_y, vpp, frecuencia, Path('graficos') / f"{Path(archivo).stem}DatosOnda.png")
+
+    print(f"Archivo #{Path(archivo).stem} terminado")
+
+# Genera un grafico de el VPP en funcion de la frecuencia
+plt.figure(figsize=(10, 6))
+plt.scatter(list(map(lambda x : x[1],vpp_freq)), list(map(lambda x : x[0],vpp_freq)))
+plt.title(f'Vpp en funcion de la Frecuencia')
+plt.xlabel('Frecuencia (kHz)')
+plt.ylabel('Vpp(V)')
+plt.grid(True)
+plt.ylim(-8, 8)
+plt.savefig(Path('graficos') / f"Frecuencia_Vpp.png")
+plt.close()
