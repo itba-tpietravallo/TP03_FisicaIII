@@ -21,7 +21,7 @@ def leer_archivo_csv(ruta_archivo):
 def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
     with open(ruta_archivo, 'w', newline='') as f:
         escritor = csv.writer(f)
-        escritor.writerow(['Tiempo (ms)', 'Voltaje (V)'])
+        escritor.writerow(['Tiempo (μs)', 'Voltaje (V)'])
         for i in range(len(valores_x)):
             escritor.writerow([valores_x[i], valores_y[i]])
 
@@ -30,7 +30,7 @@ def generar_grafico(valores_x, valores_y, vpp, frecuencia, nombre_archivo):
     plt.figure(figsize=(10, 6))
     plt.scatter(valores_x, valores_y, label=f"Frecuencia: {frecuencia}kHz")
     plt.title(f'Tensión en función del tiempo. Frecuencia: {frecuencia}kHz. Voltaje pico a pico: {vpp}V')
-    plt.xlabel('Tiempo (ms)')
+    plt.xlabel('Tiempo (μs)')
     plt.ylabel('Tensión(V)')
     plt.grid(True)
     plt.ylim(-8, 8)
