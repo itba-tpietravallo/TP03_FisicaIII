@@ -49,28 +49,18 @@ def calcular_frecuencia(valores_x: list[int], valores_y: list[int], periodo_mues
     vpp = []
 
     prev_value = valores_y[0]
-    indices = []
+    prev_value_at_p = valores_y[0]
+    indices = [0]
 
     for i, y in enumerate(valores_y):
         if (
             # Bolzano
-            y * prev_value <= 0 and
-            # Filter out noise
-            (i + 1 >= len(valores_y) or valores_y[i + 1] * prev_value <= 0 ) and
-            (i + 1 >= len(valores_y) or obtener_signo(valores_y[i + 1]) == obtener_signo(y) ) and
-            (len(indices) <= 0 or obtener_signo(valores_y[indices[-1]]) != obtener_signo(y) ) and
-            # Guarantee distance between peaks of at least one data point
-            (len(indices) == 0 or i > indices[-1] + 1) and
-            (len(indices) == 0 or (i > indices[-1] + 2 and obtener_signo(valores_y[indices[-1] - 1])) != obtener_signo(prev_value) )
+            y * prev_value < 0 or
+            y * prev_value_at_p < 0
             ):
-            # More noise filtering :)
-            if ( (y * prev_value == 0 and obtener_signo(y) == obtener_signo(prev_value)) or
-                ( len(indices) > 0 and obtener_signo(valores_y[indices[-1] + 1]) == obtener_signo(y))
-                or (len(indices) > 0 and y == 0 and indices[-1] == 0)
-            ):
-                prev_value = y
-                continue
+            prev_value_at_p = y
             indices.append(i)
+
         prev_value = y
 
     for i, _ in enumerate(indices, 1):
