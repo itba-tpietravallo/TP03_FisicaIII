@@ -143,7 +143,7 @@ for id, vfxy in enumerate(vpp_freq):
         plt.scatter(vfxy[2], vfxy[3], color=hue_to_rgb(h))
 
 plt.title(f'Voltaje pico en funcion de la frecuencia')
-plt.figtext(x=0.5, y=0.01, ha="center", s="Frecuencias representadas por un grandiente linear de color. Rojo: 0.79kHz. Verde: 4.09kHz")
+plt.figtext(x=0.5, y=0.01, ha="center", s="Frecuencias representadas por un grandiente lineal de color. Rojo: 0.79kHz. Verde: 4.09kHz")
 plt.xlabel('Tiempo (\u00B5s)')
 plt.ylabel('Voltaje pico a pico (V)')
 plt.grid(True)
