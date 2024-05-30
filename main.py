@@ -109,7 +109,7 @@ for idx, archivo in enumerate(archivos_csv):
 # Genera un grafico de el VPP en funcion de la frecuencia
 plt.figure(figsize=(10, 6))
 plt.scatter(list(map(lambda x : x[1],vpp_freq)), list(map(lambda x : x[0],vpp_freq)))
-plt.title(f'Vpp en funcion de la Frecuencia')
+plt.title(f'Voltaje pico a pico en función de la frecuencia')
 plt.xlabel('Frecuencia (kHz)')
 plt.ylabel('Vpp(V)')
 plt.grid(True)
