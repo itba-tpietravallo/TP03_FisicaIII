@@ -29,19 +29,13 @@ def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
 def generar_grafico(valores_x, valores_y, vpp, frecuencia, nombre_archivo):
     plt.figure(figsize=(10, 6))
     plt.scatter(valores_x, valores_y, label=f"Frecuencia: {frecuencia}kHz")
-    plt.title(f'Tensión en función del tiempo. Frecuencia: {frecuencia}kHz. Vpp: {vpp}')
+    plt.title(f'Tensión en función del tiempo. Frecuencia: {frecuencia}kHz. Voltaje pico a pico: {vpp}V')
     plt.xlabel('Tiempo (ms)')
     plt.ylabel('Tensión(V)')
     plt.grid(True)
     plt.ylim(-8, 8)
     plt.savefig(nombre_archivo)
     plt.close()
-
-def obtener_signo(number):
-    if number == 0:
-        return 0
-    else:
-        return math.copysign(1, number)
 
 def calcular_frecuencia(valores_x: list[int], valores_y: list[int], periodo_muestreo: float):
     min = []
@@ -81,7 +75,7 @@ def calcular_frecuencia(valores_x: list[int], valores_y: list[int], periodo_mues
     freq_data = indices[1:-1]
     cycles = len(freq_data) / 2 # Half-cycles / 2
     frequency_hz = cycles / ((freq_data[-1] - freq_data[0]) * (periodo_muestreo / 1_000_000 ))
-    return vpp_value, round(frequency_hz / 1000, 3)
+    return round(vpp_value, 2), round(frequency_hz / 1000, 3)
 
 # Ruta a la carpeta que contiene los archivos CSV
 ruta_carpeta = Path('csv/')
