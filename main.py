@@ -21,7 +21,7 @@ def leer_archivo_csv(ruta_archivo):
 def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
     with open(ruta_archivo, 'w', newline='') as f:
         escritor = csv.writer(f)
-        escritor.writerow(['Tiempo (μs)', 'Voltaje (V)'])
+        escritor.writerow([f'Tiempo (\u00B5s)', 'Voltaje (V)'])
         for i in range(len(valores_x)):
             escritor.writerow([valores_x[i], valores_y[i]])
 
@@ -30,10 +30,10 @@ def generar_grafico(valores_x, valores_y, vpp, frecuencia, nombre_archivo):
     plt.figure(figsize=(10, 6))
     plt.scatter(valores_x, valores_y, label=f"Frecuencia: {frecuencia}kHz")
     plt.title(f'Tensión en función del tiempo. Frecuencia: {frecuencia}kHz. Voltaje pico a pico: {vpp}V')
-    plt.xlabel('Tiempo (μs)')
-    plt.ylabel('Tensión(V)')
+    plt.xlabel(f'Tiempo (\u00B5s)')
+    plt.ylabel('Tensión (V)')
     plt.grid(True)
-    plt.ylim(-8, 8)
+    plt.ylim(-4, 4)
     plt.savefig(nombre_archivo)
     plt.close()
 
@@ -103,7 +103,8 @@ for idx, archivo in enumerate(archivos_csv):
     # Usar la función para generar gráficos
     generar_grafico(valores_x, valores_y, vpp, frecuencia, Path('graficos') / f"{Path(archivo).stem}DatosOnda.png")
 
-    print(f"Archivo #{Path(archivo).stem} terminado")
+    if idx % 5 == 0:
+        print(f"Archivo #{Path(archivo).stem} terminado")
 
 # Genera un grafico de el VPP en funcion de la frecuencia
 plt.figure(figsize=(10, 6))
@@ -112,6 +113,6 @@ plt.title(f'Vpp en funcion de la Frecuencia')
 plt.xlabel('Frecuencia (kHz)')
 plt.ylabel('Vpp(V)')
 plt.grid(True)
-plt.ylim(-8, 8)
+plt.ylim(0, 6)
 plt.savefig(Path('graficos') / f"Frecuencia_Vpp.png")
 plt.close()
