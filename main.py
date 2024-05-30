@@ -140,7 +140,6 @@ for id, vfxy in enumerate(vpp_freq):
         (id <= 15 and id % 5 == 0) or (id > 15 and id % 3 == 0)
     ):
         h = min(max(abs(vfxy[0] - 0.79) / (4.09 - 0.79), 0), 1) / 2.5
-        print(h, vfxy[1])
         plt.scatter(vfxy[2], vfxy[3], color=hue_to_rgb(h))
 
 plt.title(f'Voltaje pico en funcion de la frecuencia')
