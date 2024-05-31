@@ -21,12 +21,12 @@ def leer_archivo_csv(ruta_archivo):
 def escribir_archivo_csv(ruta_archivo, valores_x, valores_y):
     with open(ruta_archivo, 'w', newline='') as f:
         escritor = csv.writer(f)
-        escritor.writerow([f'Tiempo (\u00B5s)', 'Voltaje (V)'])
+        escritor.writerow([f'Tiempo (\u00B5s)', 'Tensión (V)'])
         for i in range(len(valores_x)):
             escritor.writerow([valores_x[i], valores_y[i]])
 
 def hue_to_rgb(hue):
-    "Convierte un valor [0-1] a un color rgb"
+    # "Convierte un valor [0-1] a un color rgb"
     hue = hue % 1.0
     
     h = hue * 6
@@ -125,7 +125,7 @@ for idx, archivo in enumerate(archivos_csv):
 # Genera un grafico de el VPP en funcion de la frecuencia
 plt.figure(figsize=(10, 6))
 plt.scatter(list(map(lambda x : x[1], vpp_freq)), list(map(lambda x : x[0], vpp_freq)))
-plt.title(f'Voltaje pico a pico en funcion de la Frecuencia')
+plt.title(f'Voltaje pico a pico en función de la frecuencia')
 plt.xlabel('Frecuencia (kHz)')
 plt.ylabel('Voltaje pico a pico (V)')
 plt.grid(True)
@@ -142,7 +142,7 @@ for id, vfxy in enumerate(vpp_freq):
         h = min(max(abs(vfxy[0] - 0.79) / (4.09 - 0.79), 0), 1) / 2.5
         plt.scatter(vfxy[2], vfxy[3], color=hue_to_rgb(h))
 
-plt.title(f'Voltaje pico en funcion de la frecuencia')
+plt.title(f'Voltaje pico a pico en función de la frecuencia')
 plt.figtext(x=0.5, y=0.01, ha="center", s="Frecuencias representadas por un gradiente lineal de color. Rojo: 0.79kHz. Verde: 4.09kHz")
 plt.xlabel('Tiempo (\u00B5s)')
 plt.ylabel('Voltaje pico a pico (V)')
