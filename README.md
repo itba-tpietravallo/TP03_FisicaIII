@@ -28,4 +28,4 @@ El código se encuentra en el archivo `main.py`. Para ejecutarlo, se debe tener 
 ### Google Colab
 Puede utilizar este link para correr el codigo y ver las imagenes generadas en la nube, sin necesidad de tener Python u otras librerias instaladas en su dispositivo. 
 
-[Utilice este link para acceder a el Notebook en Google Colab](https://colab.research.google.com/drive/1GueU-vnJgkDNZF2O6SDmPRxEswGQP3tA?usp=sharing)
+[Utilice este link para acceder al Notebook en Google Colab](https://colab.research.google.com/drive/1GueU-vnJgkDNZF2O6SDmPRxEswGQP3tA?usp=sharing)
